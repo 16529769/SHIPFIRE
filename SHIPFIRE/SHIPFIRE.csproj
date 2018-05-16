@@ -43,7 +43,6 @@
   <ItemGroup>
     <Compile Include="BaseSprite.cs" />
     <Compile Include="Bullet.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
