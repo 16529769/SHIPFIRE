@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace SHIPFIRE
 {
@@ -12,10 +13,16 @@ namespace SHIPFIRE
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Ship player;
+
+        Texture2D background;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
         }
 
         /// <summary>
@@ -40,7 +47,11 @@ namespace SHIPFIRE
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            background = Content.Load<Texture2D>("background");
+
             // TODO: use this.Content to load your game content here
+            player = new Ship(Content, new Vector2(150, 200));
+            player.SetControls(Keys.A, Keys.D, Keys.W, Keys.Space);
         }
 
         /// <summary>
@@ -62,6 +73,7 @@ namespace SHIPFIRE
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            player.Update(new List<Ship> { });
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -75,7 +87,15 @@ namespace SHIPFIRE
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+
+            spriteBatch.Draw(background,new Rectangle(0,0,1280,720), Color.White);
+
+            player.Draw(spriteBatch);
+
+            
+            spriteBatch.End();
+
 
             base.Draw(gameTime);
         }
