@@ -45,7 +45,7 @@ namespace SHIPFIRE
 
             rectangle = new Microsoft.Xna.Framework.Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
             origin = new Vector2(rectangle.Width / 2, rectangle.Height / 2);
-
+            
             if (presentKey.IsKeyDown(left))
             {
                 rotation -= 0.075f;

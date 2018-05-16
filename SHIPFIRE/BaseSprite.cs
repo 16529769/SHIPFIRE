@@ -57,7 +57,7 @@ namespace SHIPFIRE
                 position = value;
             }
         }
-
+        
         public float Rotation
         {
             get
