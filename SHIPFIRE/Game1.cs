@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SHIPFIRE
 {
@@ -16,6 +18,11 @@ namespace SHIPFIRE
         Ship player;
 
         Texture2D background;
+
+        List<EnemySpawn> enemyspawn = new List<EnemySpawn>();
+
+        Random random = new Random();
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -25,12 +32,7 @@ namespace SHIPFIRE
             graphics.PreferredBackBufferHeight = 720;
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
+       
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
@@ -38,10 +40,6 @@ namespace SHIPFIRE
             base.Initialize();
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -54,46 +52,63 @@ namespace SHIPFIRE
             player.SetControls(Keys.A, Keys.D, Keys.W, Keys.Space);
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
+       
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        float spawn = 0;
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             player.Update(new List<Ship> { });
-            // TODO: Add your update logic here
 
+            spawn += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            foreach (EnemySpawn enemy2 in enemyspawn)
+                enemy2.Update(graphics.GraphicsDevice);
+            // TODO: Add your update logic here
+            LoadEnemies();
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        public void LoadEnemies()
+        {
+            int randY = random.Next(100, 600);
+            if(spawn>1)
+            {
+                spawn = 0;
+                if (enemyspawn.Count() < 10)
+                {
+                    enemyspawn.Add(new EnemySpawn(Content.Load<Texture2D>("enemy1"), new Vector2(1270, randY)));
+                }
+            }
+
+            for(int i =0; i<enemyspawn.Count;i++)
+            {
+                if(!enemyspawn[i].isvisible)
+                {
+                    enemyspawn.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
 
-            spriteBatch.Draw(background,new Rectangle(0,0,1280,720), Color.White);
+            spriteBatch.Draw(background, new Rectangle(0, 0, 1280, 720), Color.White);
 
             player.Draw(spriteBatch);
 
-            
+            foreach (EnemySpawn enemy2 in enemyspawn)
+                enemy2.Draw(spriteBatch);
             spriteBatch.End();
 
 
